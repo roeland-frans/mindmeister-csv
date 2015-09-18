@@ -20,12 +20,19 @@ This is a simple Python script that will convert a *.mind* file into a *.csv* fi
 First export the mind map to a MindMeister *.mind* file. Once downloaded you can run the following commands.
 
 ```
-./mm2csv.py --output mindmap.csv mindmap.mind
+./mm2csv.py --numbers --output mindmap.csv mindmap.mind
 ```
 
 If you do not specify an output file with th *--output* option the script will print the csv output to stdout.
 This is useful if you would like to pipe the output to other commands.
 
 ```
-./mm2csv.py mindmap.mind | grep "Some search string"
+./mm2csv.py --numbers mindmap.mind | grep "Some search string"
 ```
+
+## Options
+
+*--output*: The .csv file to save to.
+*--numbers*: Print hierarchy number for each item e.g. 1.2.3
+*--ids*: Generage parent child ids to retain hierarchy relationships.
+*--leaf*: Mark leaf nodes with an 'L'.

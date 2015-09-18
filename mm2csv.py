@@ -7,6 +7,7 @@ import os
 import tempfile
 import zipfile
 import shutil
+import uuid
 
 logger = logging.getLogger('MindMeister')
 logger.setLevel(logging.DEBUG)
@@ -31,12 +32,19 @@ class MindMeisterExtractor:
     This class will extract a .mind file and convert it to a flat .csv file.
     """
 
-    def __init__(self):
+    def __init__(self, print_numbers, print_ids, print_leaf_nodes):
         self.input_file = None
         self.output_file = None
         self.csv_writer = None
+        self.print_numbers = print_numbers
+        self.print_ids = print_ids
+        self.print_leaf_nodes = print_leaf_nodes
 
-    def parse(self, depth, numbers, node):
+    @staticmethod
+    def generate_id():
+        return str(uuid.uuid4())
+
+    def parse(self, parent_id, depth, numbers, node):
         """
         This is a recursive function that is used to walk the Mind Meister hierarchy and output the
         title with a number prefix.
@@ -45,19 +53,54 @@ class MindMeisterExtractor:
         :param numbers: The string of numbers for the current node e.g. '1.2.4.5'.
         :param node: The node element currently processed, this is a dictionary.
         """
+        id = self.generate_id()
+        has_children = False
+
+
+        if 'children' in node and len(node['children']) > 0:
+            has_children = True
+
         if 'title' in node:
             if self.csv_writer:
-                self.csv_writer.writerow([numbers, node['title']])
+                row = list()
+
+                if self.print_numbers:
+                    row.append(numbers)
+                if self.print_ids:
+                    row.append(id)
+                    row.append(parent_id)
+                if self.print_leaf_nodes:
+                    if not has_children:
+                        row.append('L')
+                    else:
+                        row.append('')
+
+                row.append(node['title'])
+
+                self.csv_writer.writerow(row)
             else:
-                print '{0}, {1}'.format(numbers, node['title'])
+                row = ''
 
-        if 'children' in node:
-            if len(node['children']) > 0:
-                count = 1
+                if self.print_numbers:
+                    row += '{0},'.format(numbers)
+                if self.print_ids:
+                    row += '{0},{1},'.format(id, parent_id)
+                if self.print_leaf_nodes:
+                    if not has_children:
+                        row += 'L,'
+                    else:
+                        row += ','
 
-                for child_node in node['children']:
-                    self.parse(depth + 1, numbers + '.{0}'.format(count), child_node)
-                    count += 1
+                row += node['title']
+
+                print row
+
+        if has_children:
+            count = 1
+
+            for child_node in node['children']:
+                self.parse(id, depth + 1, numbers + '.{0}'.format(count), child_node)
+                count += 1
 
     def unzip(self, file_path):
         """
@@ -118,7 +161,7 @@ class MindMeisterExtractor:
             raise ExtractorError("Could not load the MindMeister map file, is this a correct .mind file?")
 
         if 'root' in data:
-            self.parse(0, '1', data['root'])
+            self.parse(self.generate_id(), 0, '1', data['root'])
         else:
             raise ExtractorError("Incorrect data format, is this a correct .mind file?")
 
@@ -146,9 +189,28 @@ if __name__ == '__main__':
         default=[''],
         help="The .csv file to save to.",
     )
+    args_parser.add_argument(
+        '--numbers',
+        help="Print hierarchy numbers for each item e.g. 1.2.3 (False).",
+        action='store_true'
+    )
+    args_parser.add_argument(
+        '--ids',
+        help="Generate parent child ids to retain hierarchy relationships (False).",
+        action='store_true'
+    )
+    args_parser.add_argument(
+        '--leaf',
+        help="Mark leaf nodes with an 'L' (False).",
+        action='store_true'
+    )
     args = args_parser.parse_args()
 
-    extractor = MindMeisterExtractor()
+    extractor = MindMeisterExtractor(
+        print_numbers=args.numbers,
+        print_ids=args.ids,
+        print_leaf_nodes=args.leaf
+    )
 
     try:
         extractor.convert(
