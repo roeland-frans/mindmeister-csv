@@ -32,7 +32,10 @@ This is useful if you would like to pipe the output to other commands.
 
 ## Options
 
-*--output*: The .csv file to save to.
-*--numbers*: Print hierarchy number for each item e.g. 1.2.3
-*--ids*: Generage parent child ids to retain hierarchy relationships.
-*--leaf*: Mark leaf nodes with an 'L'.
+**--output**: The .csv file to save to.
+
+**--numbers**: Print hierarchy number for each item e.g. 1.2.3
+
+**--ids**: Generage parent child ids to retain hierarchy relationships.
+
+**--leaf**: Mark leaf nodes with an 'L'.
