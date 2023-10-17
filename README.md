@@ -13,21 +13,35 @@ This is a simple Python script that will convert a *.mind* file into a *.csv* fi
 
 ## Requirements
 
-- Python 2.7
+- Python 3.8+
+
+## Installation
+
+Install from source:
+```shell
+git clone git@github.com:roeland-frans/mindmeister-csv.git
+cd mindmeister-csv
+pip install -e .
+```
+
+Install from PyPi:
+```shell
+pip install mindmeister-csv
+```
 
 ## Usage
 
 First export the mind map to a MindMeister *.mind* file. Once downloaded you can run the following commands.
 
 ```
-./mm2csv.py --numbers --output mindmap.csv mindmap.mind
+mm2csv --numbers --output mindmap.csv mindmap.mind
 ```
 
 If you do not specify an output file with th *--output* option the script will print the csv output to stdout.
 This is useful if you would like to pipe the output to other commands.
 
 ```
-./mm2csv.py --numbers mindmap.mind | grep "Some search string"
+mm2csv --numbers mindmap.mind | grep "Some search string"
 ```
 
 ## Options
@@ -39,3 +53,21 @@ This is useful if you would like to pipe the output to other commands.
 **--ids**: Generage parent child ids to retain hierarchy relationships.
 
 **--leaf**: Mark leaf nodes with an 'L'.
+
+
+# Development
+
+```shell
+# Setup virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install dev requirements
+pip install -r requirements.txt
+
+# Format code
+black .
+
+# Run tests
+pytest -vvsx
+```
