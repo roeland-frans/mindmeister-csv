@@ -1,0 +1,13 @@
+[tool.black]
+exclude = '''
+/(
+    \.venv
+  | \.git
+  | \.idea
+  | __pycache__
+  | \.pytest_cache
+  | .*egg-info
+)/
+'''
+line-length = 79
+target-version = ['py37']
