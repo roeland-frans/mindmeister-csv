@@ -185,7 +185,7 @@ class MindMeisterExtractor:
                 shutil.rmtree(mind_meister_dir)
 
 
-if __name__ == "__main__":
+def main():
     args_parser = argparse.ArgumentParser(
         description=(
             "This extracts a Mind Meister .mind file and converts it to a "
@@ -235,3 +235,7 @@ if __name__ == "__main__":
 
     except ExtractorError as error:
         logger.error(error)
+
+
+if __name__ == "__main__":
+    main()
