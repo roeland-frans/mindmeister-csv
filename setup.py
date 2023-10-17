@@ -16,7 +16,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/roeland-frans/mindmeister-csv",
     packages=find_namespace_packages(),
-    entry_points={"console_scripts": ["mm2csv = mm2csv:main"]},
+    entry_points={"console_scripts": ["mm2csv = mm2csv.mm2csv:main"]},
     classifiers=[
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
