@@ -49,6 +49,14 @@ class MindMeisterExtractor:
     def generate_id():
         return str(uuid.uuid4())
 
+    def init_csv_writer(self) -> csv.writer:
+        return csv.writer(
+            self.output_file,
+            delimiter=",",
+            quotechar='"',
+            quoting=csv.QUOTE_MINIMAL,
+        )
+
     def parse(self, parent_id: str, depth: int, numbers: str, node: dict):
         """
         This is a recursive function that is used to walk the Mind Meister
@@ -146,12 +154,7 @@ class MindMeisterExtractor:
             else:
                 self.output_file = sys.stdout
 
-            self.csv_writer = csv.writer(
-                self.output_file,
-                delimiter=",",
-                quotechar='"',
-                quoting=csv.QUOTE_MINIMAL,
-            )
+            self.csv_writer = self.init_csv_writer()
 
             try:
                 data = json.load(self.input_file)
